@@ -1922,6 +1922,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::ALLOW_CHANGEOUTFIT)
 	registerEnumIn("configKeys", ConfigManager::ONE_PLAYER_ON_ACCOUNT)
 	registerEnumIn("configKeys", ConfigManager::AIMBOT_HOTKEY_ENABLED)
+	registerEnumIn("configKeys", ConfigManager::DISABLE_BASIC_ATTACK)
+	registerEnumIn("configKeys", ConfigManager::DISABLE_PLAYER_PUSH)
 	registerEnumIn("configKeys", ConfigManager::REMOVE_RUNE_CHARGES)
 	registerEnumIn("configKeys", ConfigManager::REMOVE_WEAPON_AMMO)
 	registerEnumIn("configKeys", ConfigManager::REMOVE_WEAPON_CHARGES)
@@ -2487,6 +2489,11 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "popupFYI", LuaScriptInterface::luaPlayerPopupFYI);
 
 	registerMethod("Player", "isPzLocked", LuaScriptInterface::luaPlayerIsPzLocked);
+
+	registerMethod("Player", "isActionLocked", LuaScriptInterface::luaPlayerIsActionLocked);
+	registerMethod("Player", "getActionLockRemaining", LuaScriptInterface::luaPlayerGetActionLockRemaining);
+	registerMethod("Player", "setActionLock", LuaScriptInterface::luaPlayerSetActionLock);
+	registerMethod("Player", "clearActionLock", LuaScriptInterface::luaPlayerClearActionLock);
 
 	registerMethod("Player", "getClient", LuaScriptInterface::luaPlayerGetClient);
 
@@ -9976,6 +9983,56 @@ int LuaScriptInterface::luaPlayerPopupFYI(lua_State* L)
 	if (player) {
 		const std::string& message = getString(L, 2);
 		player->sendFYIBox(message);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerIsActionLocked(lua_State* L)
+{
+	// player:isActionLocked()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		pushBoolean(L, player->isActionLocked());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerGetActionLockRemaining(lua_State* L)
+{
+	// player:getActionLockRemaining() -> milissegundos restantes (0 = livre)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, static_cast<lua_Number>(player->getActionLockRemaining()));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerSetActionLock(lua_State* L)
+{
+	// player:setActionLock(ms)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->setActionLock(getNumber<uint32_t>(L, 2));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerClearActionLock(lua_State* L)
+{
+	// player:clearActionLock()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->clearActionLock();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

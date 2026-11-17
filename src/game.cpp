@@ -636,6 +636,11 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 		return;
 	}
 
+	if (player->isActionLocked()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	uint8_t fromIndex = 0;
 	if (fromPos.x == 0xFFFF) {
 		if (fromPos.y & 0x40) {
@@ -702,6 +707,15 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 
 void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Position& movingCreatureOrigPos, Tile* toTile)
 {
+	// Sem arrastar outros jogadores (arrastar a si mesmo continua valendo).
+	// Contas com PlayerFlag_CanPushAllCreatures (GMs) ficam de fora.
+	if (player != movingCreature && movingCreature->getPlayer() &&
+	        g_config.getBoolean(ConfigManager::DISABLE_PLAYER_PUSH) &&
+	        !player->hasFlag(PlayerFlag_CanPushAllCreatures)) {
+		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
+		return;
+	}
+
 	if (!player->canDoAction()) {
 		uint32_t delay = player->getNextActionTime();
 		SchedulerTask* task = createSchedulerTask(delay, std::bind(&Game::playerMoveCreatureByID,
@@ -2065,6 +2079,11 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 		return;
 	}
 
+	if (player->isActionLocked()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
 	if (isHotkey && !g_config.getBoolean(ConfigManager::AIMBOT_HOTKEY_ENABLED)) {
 		return;
@@ -2149,6 +2168,11 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 		return;
 	}
 
+	if (player->isActionLocked()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
 	if (isHotkey && !g_config.getBoolean(ConfigManager::AIMBOT_HOTKEY_ENABLED)) {
 		return;
@@ -2205,6 +2229,11 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uin
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
+		return;
+	}
+
+	if (player->isActionLocked()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 

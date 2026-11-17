@@ -1133,6 +1133,19 @@ class Player final : public Creature, public Cylinder
 		bool canDoAction() const {
 			return nextAction <= OTSYS_TIME();
 		}
+
+		// --- Lock de ação (Sistema 1: animação de skill) ---
+		// Timestamp em memória: nunca é salvo no banco e expira sozinho,
+		// então crash/logout/erro de Lua não deixam o jogador preso.
+		bool isActionLocked() const override {
+			return actionLockUntil > OTSYS_TIME();
+		}
+		int64_t getActionLockRemaining() const {
+			int64_t remaining = actionLockUntil - OTSYS_TIME();
+			return remaining > 0 ? remaining : 0;
+		}
+		void setActionLock(uint32_t ms);
+		void clearActionLock();
 		uint32_t getNextActionTime() const;
 
 		Item* getWriteItem(uint32_t& windowTextId, uint16_t& maxWriteLen);
@@ -1227,6 +1240,7 @@ class Player final : public Creature, public Cylinder
 		uint64_t experience = 0;
 		uint64_t manaSpent = 0;
 		uint64_t lastAttack = 0;
+		int64_t actionLockUntil = 0;
 		uint64_t bankBalance = 0;
 		uint64_t lastQuestlogUpdate = 0;
 		int64_t lastFailedFollow = 0;

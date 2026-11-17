@@ -16,3 +16,7 @@ dofile('data/lib/core/position.lua')
 dofile('data/lib/core/teleport.lua')
 dofile('data/lib/core/tile.lua')
 dofile('data/lib/core/vocation.lua')
+
+-- Sistema 1: animação de skill
+dofile('data/lib/core/skill_animation_config.lua')
+dofile('data/lib/core/skill_animation.lua')

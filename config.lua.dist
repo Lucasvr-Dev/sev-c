@@ -2,6 +2,10 @@
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 worldType = "pvp"
 hotkeyAimbotEnabled = true
+-- Sistema 1: true = sem ataque básico (só skills/spells causam dano)
+disableBasicAttack = true
+-- true = jogadores não podem arrastar outros jogadores
+disablePlayerPush = true
 protectionLevel = 1
 killsToRedSkull = 3
 killsToBlackSkull = 6

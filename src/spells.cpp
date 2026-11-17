@@ -556,6 +556,12 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
+	// Sistema 1: durante a animação de uma skill, nenhuma outra spell/runa.
+	if (player->isActionLocked()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
 	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
 		return true;
 	}

@@ -8,4 +8,8 @@
 	<event type="death" name="PlayerDeath" script="playerdeath.lua" />
 	<event type="death" name="DropLoot" script="droploot.lua" />
 	<event type="extendedopcode" name="ExtendedOpcode" script="extendedopcode.lua" />
+	<event type="login" name="SkillAnimationLogin" script="skill_animation_login.lua" />
+	<event type="logout" name="SkillAnimationLogout" script="skill_animation_logout.lua" />
+	<event type="death" name="SkillAnimationDeath" script="skill_animation_death.lua" />
+	<event type="healthchange" name="SkillAnimationImmunity" script="skill_animation_immunity.lua" />
 </creaturescripts>

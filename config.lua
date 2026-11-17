@@ -2,6 +2,8 @@
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 worldType = "pvp"
 hotkeyAimbotEnabled = true
+-- Sistema 1: true = sem ataque básico (só skills/spells causam dano)
+disableBasicAttack = true
 protectionLevel = 1
 killsToRedSkull = 3
 killsToBlackSkull = 6
@@ -19,7 +21,7 @@ expFromPlayersLevelRange = 75
 -- Connection Config
 -- NOTE: maxPlayers set to 0 means no limit
 -- NOTE: allowWalkthrough is only applicable to players
-ip = "127.0.0.1"
+ip = "26.195.40.27"
 bindOnlyGlobalAddress = false
 loginProtocolPort = 7171
 gameProtocolPort = 7172

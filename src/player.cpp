@@ -1,4 +1,4 @@
-// Copyright 2022 The Forgotten Server Authors. All rights reserved.
+﻿// Copyright 2022 The Forgotten Server Authors. All rights reserved.
 // Use of this source code is governed by the GPL-2.0 License that can be found in the LICENSE file.
 
 #include "otpch.h"
@@ -3222,6 +3222,13 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams& fpp) 
 
 void Player::doAttacking(uint32_t)
 {
+	// Sistema 1: sem ataque básico. attackedCreature continua servindo como
+	// seleção de alvo para skills. Este é o ÚNICO caminho que chama
+	// Weapon::useWeapon/useFist (melee, distance, wands/rods).
+	if (g_config.getBoolean(ConfigManager::DISABLE_BASIC_ATTACK)) {
+		return;
+	}
+
 	if (lastAttack == 0) {
 		lastAttack = OTSYS_TIME() - getAttackSpeed() - 1;
 	}
@@ -3316,6 +3323,23 @@ void Player::onWalkComplete()
 void Player::stopWalk()
 {
 	cancelNextWalk = true;
+}
+
+void Player::setActionLock(uint32_t ms)
+{
+	actionLockUntil = OTSYS_TIME() + ms;
+
+	// cancela qualquer caminho/auto-walk em andamento
+	listWalkDir.clear();
+	stopEventWalk();
+	setNextWalkTask(nullptr);
+	setNextWalkActionTask(nullptr);
+	sendCancelWalk();
+}
+
+void Player::clearActionLock()
+{
+	actionLockUntil = 0;
 }
 
 LightInfo Player::getCreatureLight() const

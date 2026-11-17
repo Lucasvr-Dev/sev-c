@@ -410,8 +410,12 @@ class Creature : virtual public Thing
 			movementBlocked = state;
 			cancelNextWalk = true;
 		}
+		// Bloqueio de ação (ex.: animação de skill). Só o Player sobrescreve.
+		virtual bool isActionLocked() const {
+			return false;
+		}
 		bool isMovementBlocked() const {
-			return movementBlocked;
+			return movementBlocked || isActionLocked();
 		}
 
 		//creature script events

@@ -1015,6 +1015,11 @@ class LuaScriptInterface
 
 		static int luaPlayerIsPzLocked(lua_State* L);
 
+		static int luaPlayerIsActionLocked(lua_State* L);
+		static int luaPlayerGetActionLockRemaining(lua_State* L);
+		static int luaPlayerSetActionLock(lua_State* L);
+		static int luaPlayerClearActionLock(lua_State* L);
+
 		static int luaPlayerGetClient(lua_State* L);
 
 		static int luaPlayerGetHouse(lua_State* L);
